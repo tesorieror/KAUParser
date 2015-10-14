@@ -401,7 +401,8 @@ function parseCategories(f) {
 
 	function processLine(line) {
 		return fs.read(OUTDIR + 'tag-' + line[0].toLowerCase() + '.json')//
-		// return q.nfcall(fs.readFile, OUTDIR + 'tag-' + line[0].toLowerCase() +
+		// return q.nfcall(fs.readFile, OUTDIR + 'tag-' + line[0].toLowerCase()
+		// +
 		// '.json', 'utf8')//
 		.then(JSON.parse)//
 		// .then(c.log("JSON", true), c.error("JSON ERROR"))//
@@ -429,13 +430,18 @@ function parseCategories(f) {
 	// .then(q.nfbind(fs.writeFile, OUTDIR + f.replace(/-dict\.csv/g, '') +
 	// '.json'))//
 	.then(function(data) {
-		var file =  'tag-category.json';
+		var file = 'tag-category.json';
 		// console.log("F ", data);
 		return fs.write(OUTDIR + file, data);
 		// return data;
 	})//
 	;
 }
+
+/*******************************************************************************
+ * Parse Indicators
+ * 
+ */
 
 function parseIndicators(f) {
 	// console.log(INDIR + f);
@@ -447,8 +453,10 @@ function parseIndicators(f) {
 	var offset = parseInt(size[2]);
 	console.log(row, col, offset);
 
-	return fs.read(INDIR + f)//
-	.then(toArray)//
+	return fs.read(INDIR + f)
+	//
+	.then(toArray)
+	//
 	.then(function(indicators) {
 
 		var hrow = row - 1
@@ -475,7 +483,8 @@ function parseIndicators(f) {
 
 		var dictionaries = [];
 
-		return q.all(readDictionaryPromises)//
+		return q.all(readDictionaryPromises)
+		//
 		.then(function(data) {
 			for (var i = 0; i < data.length; i++) {
 				var cat = cats[i];
@@ -487,9 +496,12 @@ function parseIndicators(f) {
 				});
 			}
 			return dictionaries;
-		})//
+		})
+		//
 		.then(function(data) {
 
+//			console.log('Indicators: ', indicators.length * 9);
+//			console.log('Cols: ', col);
 			var result = [];
 
 			for (var r = row; r < indicators.length; r++) {
@@ -501,14 +513,30 @@ function parseIndicators(f) {
 					if (key == undefined) {
 						throw Error('Key not found ' + indicators[r][c] + ' in ' + indicators[1][c]);
 					}
-					// console.log('cat: ', indicators[1][c], ' tag: ', key);
+					// console.log('cat: ',
+					// indicators[1][c], ' tag:
+					// ', key);
 					vTags.push({
 						category : indicators[1][c],
 						name : key
 					});
+
+//					if (r == 2978) {
+//						// console.log('vTags ', JSON.stringify(vTags));
+//						// if (indicators[1][c] == 'SP' || indicators[1][c] == 'SSYS') {
+//						// console.log('TAGS 2977 + 1: [' + indicators[1][c], ']: ' + key);
+//						// }
+//					}
 				}
 
+//				if (r == 2978) {
+//					console.log('vTags ', JSON.stringify(vTags));
+//				}
 				// console.log("vTags",vTags);
+
+				// console.log('offset: '
+				// + offset + ' cols: ',
+				// col + offset);
 
 				for (var c = offset; c < col + offset; c++) {
 					var tags = vTags.slice(0);
@@ -517,9 +545,12 @@ function parseIndicators(f) {
 					var dict = dictionaries[cat];
 					// console.log(Object.keys(dictionaries));
 					var k = indicators[0][c];
-					// console.log('cat: ', cat, 'k: ', k);
+					// console.log('cat: ', cat,
+					// 'k: ', k);
 					var tag = dict[processKey(k)];
-					// console.log('cat: ', cat, ' tag: ', tag);
+					// console.log('cat: ', cat,
+					// ' tag: ', tag);
+
 					tags.push({
 						category : cat,
 						name : tag
@@ -528,21 +559,50 @@ function parseIndicators(f) {
 					cat = indicators[1][hcol];
 					dict = dictionaries[cat];
 					tag = dict[processKey(indicators[1][c])];
-					// console.log('cat: ', cat, ' tag: ', tag);
+					// console.log('cat: ', cat,
+					// ' tag: ', tag);
 					tags.push({
 						category : cat,
 						name : tag
 					});
-					// console.log('value: ', indicators[r][c]);
+					// console.log('value: ',
+					// indicators[r][c]);
 					result.push({
 						value : indicators[r][c],
 						tags : tags
 					});
 					// console.log('---');
+
+//					if (result.length == 2973) {
+//						console.log("Indicator 2973", JSON.stringify(result[result.length - 1]));
+//					}
+//					if (result.length == 2978) {
+//						console.log("Indicator 2978", JSON.stringify(result[result.length - 1]));
+//						console.log("Indicator 2978 (raw)", JSON.stringify(indicators[r]));
+//						console.log("Indicator 2978 [7] h ", JSON.stringify(indicators[1][7]));
+//						console.log("Indicator 2978 [7] ", JSON.stringify(indicators[r][7]));
+//						var catTemp = indicators[1][hcol];
+//						console.log("CatTemp: ", catTemp);
+//						console.log("Indicator 2978 [8] h ", JSON.stringify(indicators[1][8]));
+//						console.log("Indicator 2978 [8] ", JSON.stringify(indicators[r][8]));
+//						catTemp = indicators[1][hcol];
+//						console.log("CatTemp: ", catTemp);
+//
+//					}
 				}
 			}
 			// console.log('result ', result);
 			// return null;
+
+			/**
+			 * Checking
+			 */
+			checkIds(result);
+
+			/**
+			 * End of checking
+			 */
+
 			return result;
 		})//
 		.then(JSON.stringify)//
@@ -560,6 +620,52 @@ function parseIndicators(f) {
 	})//
 	;
 
+}
+
+function checkIds(result) {
+
+	function createKey(indicator) {
+		return _.map(indicator.tags, function(tag) {
+			return tag.category + '-' + tag.name;
+		}).join('-');
+	}
+	console.log('Result', result.length);
+
+	var allids = [];
+	var actual = 0;
+	var errors = 0;
+	_.each(result, function(indicator) {
+		var key = createKey(indicator);
+		var index = Object.keys(allids).indexOf(key);
+		if (index < 0) {
+			allids[key] = indicator;
+		} else {
+			var rowPrev = Math.floor(index / 9) + 3;
+			var colPrev = index % 9;
+			var valPrev = allids[key].value;
+			var rowActual = Math.floor(actual / 9) + 3;
+			var colActual = actual % 9;
+			var valActual = indicator.value
+			// throw Error('Key:' + key + '\nPrev:' + index + ' ,row:' + rowPrev
+			// + ' ,col:' + colPrev + '\n value:' + indicator.value
+			// + '\nActual:' + actual + ' , row:' + rowActual + ' ,col:'
+			// + colActual + '\n value' + indicator.value);
+			errors = errors + 1;
+			console.error('Key:' + key + '\nPrev:' + index + ' ,row:' + rowPrev + ' ,col:' + colPrev + ' value:' + valPrev + '\nActual:' + actual + ' , row:'
+					+ rowActual + ' ,col:' + colActual + ' value: ' + valActual);
+
+			// throw Error('ActKey: ' + key + ' indicator: \n'
+			// + JSON.stringify(indicator) + '\nPrev: \n'
+			// + JSON.stringify(allids[key]));
+
+		}
+		actual++;
+	});
+	if (errors == 0) {
+		console.log("INDICATOR CHECK OK!");
+	} else {
+		console.error('Errors ' + errors)
+	}
 }
 
 /**
