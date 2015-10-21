@@ -3,6 +3,7 @@
 	<name>KAUParser</name>
 	<comment></comment>
 	<projects>
+		<project>db.iras</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>
