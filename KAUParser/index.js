@@ -7,7 +7,7 @@ var q = require('q');
 
 var p = require('./parser');
 var c = require('./common');
-var db = require('/Users/ricardo.tesoriero/Documents/workspace_old/db.iras/db');
+var db = require('/Users/ricardo.tesoriero/GitRepo/db.iras/db.iras/db');
 
 p.instance.parseDicts()//
 .then(p.instance.parseCategories)//
