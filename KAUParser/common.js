@@ -14,10 +14,10 @@ function log(msg, logData) {
 		if (msg) {
 			console.log(msg);
 			if (logData) {
-				console.log(data);
+				console.log((data));
 			}
 		} else {
-			console.log(data);
+			console.log((data));
 		}
 		return data;
 		// process.exit(0);

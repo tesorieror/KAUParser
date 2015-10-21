@@ -1,3 +1,10 @@
 /dictionaries/
 /node_modules/
 /output/
+/.bowerrc
+/.gitignore
+/.jshintrc
+/.project
+/.sublime-project
+/.tern-project
+/.settings/
