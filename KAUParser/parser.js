@@ -46,21 +46,21 @@ function Parser() {
 	}
 
 	function loadOutputDictionaries(dicts) {
-		console.log('loadOutputDictionaries');
+		// console.log('loadOutputDictionaries');
 		return q.all(_.map(dicts, function(dict) {
 			return dict.loadFromOutput();
 		}));
 	}
 
 	function loadInputDictionaries(dicts) {
-		console.log('loadInputDictionaries', dicts.length);
+		// console.log('loadInputDictionaries', dicts.length);
 		return q.all(_.map(dicts, function(dict) {
 			return dict.loadFromInput();
 		}));
 	}
 
 	function saveDictionaries(dics) {
-		console.log('saveInputDictionaries');
+		// console.log('saveInputDictionaries');
 		return q.all(_.map(dics, function(dict) {
 			return dict.save();
 		}));
@@ -71,14 +71,18 @@ function Parser() {
 	 */
 
 	this.parseTags = function() {
-		console.log('parseTags');
+		// console.log('parseTags');
 		return FM.instance.getInputTagFiles() //
 		.then(readTagFiles)//
+		// .then(c.log('after readTagFiles', false), c.error('after
+		// readTagFiles'))//
 		.then(translateTags)//
+		// .then(c.log('after translateTags', false), c.error('after
+		// translateTags'))//
 		.then(toTags)//
-		.then(c.log('after toTags', false), c.error('after toTags'))//	
+		// .then(c.log('after toTags', false), c.error('after toTags'))//
 		.then(storeTags)//
-		.then(c.log('after store', false), c.error('after store'))//		
+		// .then(c.log('after store', false), c.error('after store'))//
 	}
 
 	function readTagFiles(files) {
@@ -94,13 +98,12 @@ function Parser() {
 	}
 
 	function toTags(arrayLists) {
-		console.log('toTags');
+		// console.log('toTags');
 		return _.map(arrayLists, function(arrays) {
 			var cats = _.first(arrays);
 			var body = _.without(arrays, cats);
 			var tagDict = [];
 			_.each(body, function(array) {
-
 				var tag = tagDict[array[0].id];
 				if (!tag) {
 					tagDict[array[0].id] = new Tag(cats, array);
@@ -113,7 +116,7 @@ function Parser() {
 	}
 
 	function storeTags(tagLists) {
-		console.log('store');
+		// console.log('store');
 		return DB.instance.removeTags()//
 		.then(q.all(_.map(tagLists, function(tags) {
 			return DB.instance.addTags(tags);
@@ -125,10 +128,14 @@ function Parser() {
 	 */
 
 	this.parseCategories = function() {
-		console.log('parseCategories');
+		// console.log('parseCategories');
 		return FM.instance.getInputCategoryFiles() //
+		.then(c.log('after getInputCategoryFiles'),
+				c.error('after getInputCategoryFiles'))//
 		.then(readTagCategoryFiles)//
-		.then(storeCategories)
+		.then(c.log('after readTagCategoryFiles'),
+				c.error('after readTagCategoryFiles'))//
+		.then(storeCategories)//
 		// .then(c.log('after readTagFiles', true), c.error('after readTagFiles'));
 	}
 
@@ -147,20 +154,17 @@ function Parser() {
 		});
 	}
 
-
-
 	function storeCategories(tagCategoryLists) {
-		
 		function addTagCategories() {
 			return q.all(_.map(tagCategoryLists, function(tagCategories) {
 				return DB.instance.addTagCategories(tagCategories);
 			}));
-		}		
-		
+		}
+
 		return DB.instance.removeTagCategories()//
 		.then(addTagCategories)//
-		.then(c.log('after addTagCategories', false),
-				c.error('after addTagCategories'));//		
+		// .then(c.log('after addTagCategories', false),
+		// c.error('after addTagCategories'));//
 	}
 
 	/*****************************************************************************
@@ -185,19 +189,18 @@ function Parser() {
 		.then(translate)//
 		.then(toIndicators)//
 		.then(checkIds)//
-		.then(c.log("after checkIds", false), c.error("after checkIds"))//
+		// .then(c.log("after checkIds", false), c.error("after checkIds"))//
 		.then(storeIndicators)//
-		.then(c.log("after parseIndicatorFile", false),
-				c.error("after parseIndicatorFile"))//				
+		// .then(c.log("after parseIndicatorFile", false),
+		// c.error("after parseIndicatorFile"))//
 	}
 
 	function storeIndicators(indicators) {
-		console.log('storeIndicators', indicators.length)
+		// console.log('storeIndicators', indicators.length)
 		return DB.instance.removeIndicators()//		
 		.then(function(data) {
-			console.log('after removeIndicators')
-			console.log('indicators', indicators.length)
-			// return data;
+			// console.log('after removeIndicators')
+			// console.log('indicators', indicators.length)
 			return DB.instance.addIndicators(indicators)
 		})
 	}
@@ -273,9 +276,22 @@ function Parser() {
 		var errors = 0;
 		console.log('checkIds indicators', indicators.length)
 
+		var ind = 0;
+		var last = 0;
+		var actual = 0;
+		var total = indicators.length;
+
 		_.each(indicators, function(indicator) {
 			var key = indicator._id;
 			var index = Object.keys(allids).indexOf(key);
+
+			ind++
+			actual = Math.floor(((ind / total) * 100))
+
+			if (actual != last) {
+				console.log(actual +' % checked!')
+				last = actual
+			}
 
 			if (index < 0) {
 				allids[key] = indicator;
@@ -295,9 +311,9 @@ function Parser() {
 			actual++;
 		});
 		if (errors == 0) {
-			console.log("INDICATOR CHECK OK!");
+			console.log("Indicator check OK!");
 		} else {
-			console.error('Errors ' + errors)
+			console.error('Indicator check error: ' + errors+' errors')
 		}
 		return indicators;
 	}

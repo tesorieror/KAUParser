@@ -10,7 +10,8 @@ var s = require('./string-utils');
 
 function translate(arrays) {
 
-	console.log('translate');
+	// console.log('translate');
+
 	function getHeader() {
 		return _.first(arrays);
 	}
@@ -22,7 +23,7 @@ function translate(arrays) {
 	}
 
 	function loadDicts() {
-		console.log('loadDicts');
+		// console.log('loadDicts');
 		// console.log('loadDicts arrays', arrays);
 		var ids = _.map(getHeader(), function(header) {
 			return header.toLowerCase();
@@ -40,7 +41,7 @@ function translate(arrays) {
 	}
 
 	function process(dicts) {
-		console.log('process')
+		// console.log('process')
 		var body = getBody();
 		var header = getHeader();
 		var result = [];
@@ -54,11 +55,12 @@ function translate(arrays) {
 			}
 			result.push(elems);
 		}
+
 		return [ getHeader() ].concat(result);
 	}
 
 	return loadDicts().then(process)//
-	// .then(c.log("after translate", true), c.error("after translate"))//
+
 }
 
 module.exports.translate = translate;

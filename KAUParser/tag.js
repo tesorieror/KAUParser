@@ -3,14 +3,8 @@
  */
 var _ = require('underscore');
 var TagId = require('./tag-id');
-// var TagDependency = require('./tag-dependency');
-// var TagModel =
-// require('/Users/ricardo.tesoriero/Documents/workspace_old/db.iras/model/Tag');
 
 function Tag(categories, array) {
-
-	// console.log('Tag categories', categories);
-	// console.log('Tag array', array);
 
 	var self = this;
 
@@ -21,8 +15,11 @@ function Tag(categories, array) {
 	self.order = -1;
 	self.dependencies = [];
 
+	self.createDependencyId = function(tags) {
+		return tags.join('_');
+	};
+
 	self.addDependency = function(cats, array) {
-		// console.log('addDependency');
 		depCats = _.without(cats, _.first(cats));
 		depArray = _.without(array, _.first(array));
 
@@ -31,14 +28,22 @@ function Tag(categories, array) {
 					.createKeyFor(cat, depArray[depCats.indexOf(cat)].id)
 		});
 
-		self.dependencies.push({
-			tags : tags
-		});
+		var depId = self.createDependencyId(tags);
+		var depIds = _.pluck(self.dependencies, '_id')
+
+		if (!_.contains(depIds, depId)) {
+			self.dependencies.push({
+				_id : depId,
+				tags : tags
+			});
+		}
+
 	}
 
 	if (categories.length > 1) {
 		self.addDependency(categories, array);
 	}
+
 	return this;
 }
 

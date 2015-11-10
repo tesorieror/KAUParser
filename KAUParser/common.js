@@ -9,15 +9,25 @@
  * @param logData
  * @returns {Function}
  */
-function log(msg, logData) {
+function log(msg, logData, json) {
+
 	return function(data) {
+		function logDataToConsole() {
+			if (json) {
+				console.log('JSON')
+				console.log(JSON.stringify(data))
+			} else
+				console.log((data));
+		}
+
 		if (msg) {
 			console.log(msg);
 			if (logData) {
-				console.log((data));
+
+				logDataToConsole();
 			}
 		} else {
-			console.log((data));
+			logDataToConsole();
 		}
 		return data;
 		// process.exit(0);

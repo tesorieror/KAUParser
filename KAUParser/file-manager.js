@@ -23,47 +23,6 @@ function FileManager() {
 		return DICDIR + filename;
 	}
 
-	// function buildInputFiles(files) {
-	// console.log('buildInputFiles');
-	// return _.map(files, function(f) {
-	// return getInputFile(f)
-	// });
-	// }
-	//
-	// function readPromisesFrom(files) {
-	// return _.map(files, function(file) {
-	// return fs.read(file);
-	// });
-	// }
-	//
-	// function getLinesFrom(files) {
-	// return readPromises(files)//
-	// then();
-	// }
-	//
-	// function toCsvFiles(files) {
-	// return _.map(files, function(file) {
-	// return new CsvFile(file);
-	// });
-	// }
-	//
-	// /*****************************************************************************
-	// * Dictionary Files
-	// */
-	//
-	// function getDictionaryFile(filename) {
-	// return DICDIR + filename;
-	// }
-	//
-	// function getInputDictionaryCsvFiles() {
-	// console.log('getInputDictionaryFiles');
-	// return fs.list(INDIR)//
-	// .then(filterDictionaryFilenames)//
-	// .then(buildInputFiles)//
-	// .then(toCsvFiles);
-	// }
-	//
-
 	this.getInputDictFileForId = function(id) {
 		return new CsvFile(getInputFile(id + '-dict.csv'));
 	}
@@ -73,14 +32,14 @@ function FileManager() {
 	}
 
 	this.getInputDictIds = function() {
-		console.log('getInputDictIds');
+		// console.log('getInputDictIds');
 		return fs.list(INDIR)//
 		.then(filterDictionaryFilenames)//
 		.then(dictFilesToIds);
 	}
 
 	this.getInputTagFiles = function() {
-		console.log('getInputTagFilenames');
+		// console.log('getInputTagFilenames');
 		return fs.list(INDIR)//
 		.then(filterTagFilenames)//
 		.then(addInputPath)//
@@ -88,11 +47,12 @@ function FileManager() {
 	}
 
 	this.getInputCategoryFiles = function() {
-		console.log('getInputCategoryFiles');
+		// console.log('getInputCategoryFiles');
 		return fs.list(INDIR)//
 		.then(filterCategoryFilenames)//
-		.then(c.log('after filterCategoryFilenames', true),
-				c.error('after filterCategoryFilenames')).then(addInputPath)//
+		// .then(c.log('after filterCategoryFilenames', true),
+		// c.error('after filterCategoryFilenames')).then(addInputPath)//
+		.then(addInputPath)//
 		.then(toCsvFiles);
 	}
 
@@ -109,14 +69,14 @@ function FileManager() {
 	}
 
 	this.getOutputDictIds = function() {
-		console.log('getOutputDictIds');
+		// console.log('getOutputDictIds');
 		return fs.list(DICDIR)//
 		.then(filterDictionaryFilenames)//
 		.then(dictFilesToIds);
 	}
 
 	function dictFilesToIds(files) {
-		console.log('filesToId');
+		// console.log('filesToId');
 		return _.map(files, function(file) {
 			return dictFileToId(file);
 		});
@@ -128,7 +88,7 @@ function FileManager() {
 	}
 
 	function filterDictionaryFilenames(files) {
-		console.log('filterDictionaryFilenames');
+		// console.log('filterDictionaryFilenames');
 		return _.filter(files, function(file) {
 			return file.match(/\-dict.csv$/g);
 		});
@@ -149,8 +109,8 @@ function FileManager() {
 	this.getInputIndicatorFiles = function() {
 		return fs.list(INDIR)//
 		.then(filterIndicatorFilenames)//
-		.then(c.log('after filterIndicatorFilenames', true),
-				c.error('after filterIndicatorFilenames'))//
+		// .then(c.log('after filterIndicatorFilenames', true),
+		// c.error('after filterIndicatorFilenames'))//
 		.then(addInputPath)//
 		.then(toIndicatorCsvFiles);
 	};
@@ -161,54 +121,15 @@ function FileManager() {
 			return file.match(/^indicator-.+\.csv$/g);
 		});
 	}
-	
+
 	function toIndicatorCsvFiles(files) {
-//		console.log('toIndicatorCsvFiles', files);
+		// console.log('toIndicatorCsvFiles', files);
 		return _.map(files, function(file) {
 			return new IndicatorCsvFile(file);
 		});
 	}
-	
 
-	//
-	// /*****************************************************************************
-	// * Tag Files
-	// */
-	//
-	// function getInputTagCsvFiles() {
-	// console.log('getInputTagFiles');
-	// return fs.list(INDIR)//
-	// .then(filterTagFilenames)//
-	// .then(buildInputFiles)//
-	// .then(toCsvFiles);
-	// }
-	//
-	// function filterTagFilenames(files) {
-	// return _.filter(files, function(file) {
-	// return file.match(/\-tag.csv$/g);
-	// });
-	// }
-	//
-	// /*****************************************************************************
-	// * Indicator files
-	// */
-	//
-	// function getInputIndicatorCsvFiles() {
-	// console.log('getInputIndicatorFiles');
-	// return fs.list(INDIR)//
-	// .then(filterIndicatorFilenames)//
-	// .then(buildInputFiles)//
-	// .then(toCsvFiles);
-	// }
-	//
-	// function filterIndicatorFilenames(files) {
-	// return _.filter(files, function(file) {
-	// return file.match(/\-ind.csv$/g);
-	// });
-	// }
-	//
-
-	console.log('File manager created!');
+	// console.log('File manager created!');
 
 	return this;
 }

@@ -22,7 +22,7 @@ function Line(arr) {
 		return s.normalizeKey(getKey());
 	}
 
-	function getValue() {
+	function getValue() {			
 		return content[1];
 	}
 

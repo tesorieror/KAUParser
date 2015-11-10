@@ -7,10 +7,6 @@ var c = require('./common');
 var Line = require('./line');
 
 function Dictionary(id) {
-	// (KEY, VALUE, [_ID])
-
-	// console.log('id',id);
-
 	var self = this;
 	self.id = id;
 
@@ -79,12 +75,16 @@ function Dictionary(id) {
 	}
 
 	function addLines(lines) {
-		console.log('addLines', lines.length);
+		// console.log('addLines', lines.length);
 		lines = _.uniq(lines, function(line) {
 			return line.getNormKey();
 		});
 
 		_.each(lines, function(line) {
+			if (line.getNormValue().indexOf('(') > 0) {
+				// console.log('- line', line.getId())
+				// console.log('+ line', line.getNormValue())
+			}
 			addLineToDictionary(line);
 		});
 
@@ -101,7 +101,7 @@ function Dictionary(id) {
 	}
 
 	function loadFromInput() {
-		console.log('loadFromInput');
+		// console.log('loadFromInput');
 		return FM.instance.getInputDictFileForId(self.id)//
 		.readAsArrays()//
 		.then(toLines)//
@@ -114,7 +114,7 @@ function Dictionary(id) {
 	}
 
 	function loadFromOutput() {
-		console.log('loadFromOutput');
+		// console.log('loadFromOutput');
 		return FM.instance.getOutputDictFileForId(self.id)//
 		.readAsArrays()//
 		.then(toLines)//
@@ -131,14 +131,14 @@ function Dictionary(id) {
 	}
 
 	function removeEmptyKeys(lines) {
-		console.log('removeEmptyKeys');
+		// console.log('removeEmptyKeys');
 		return _.filter(lines, function(line) {
 			return line.isKeyEmpty();
 		});
 	}
 
 	function removeHeader(lines) {
-		console.log('removeHeader');
+		// console.log('removeHeader');
 		return _.without(lines, lines[0]);
 	}
 

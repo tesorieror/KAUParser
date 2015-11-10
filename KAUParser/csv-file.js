@@ -13,7 +13,7 @@ function CsvFile(file) {
 	var self = this;
 
 	function write(data) {
-		console.log('write CsvFile');
+		// console.log('write CsvFile');
 		return fs.write(file, data)//
 		.then(function(result) {
 			return data;
@@ -25,6 +25,7 @@ function CsvFile(file) {
 	}
 
 	function readAsString() {
+//		console.log("readAsString", file)
 		return fs.read(file);
 	}
 
