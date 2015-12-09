@@ -20,6 +20,7 @@ function Tag(categories, array) {
 	};
 
 	self.addDependency = function(cats, array) {
+
 		depCats = _.without(cats, _.first(cats));
 		depArray = _.without(array, _.first(array));
 

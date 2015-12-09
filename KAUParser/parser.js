@@ -105,11 +105,13 @@ function Parser() {
 			var tagDict = [];
 			_.each(body, function(array) {
 				var tag = tagDict[array[0].id];
+				
 				if (!tag) {
 					tagDict[array[0].id] = new Tag(cats, array);
 				} else {
 					tagDict[array[0].id].addDependency(cats, array);
 				}
+				
 			});
 			return _.values(tagDict);
 		});
