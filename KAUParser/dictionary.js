@@ -25,9 +25,10 @@ function Dictionary(id) {
 	}
 
 	function translateId(normKey) {
-		// console.log('translateId')
-		// console.log('translateId normKey', normKey)
-		// console.log('translateId', dictionary[normKey])
+//		 console.log('translateId')
+//		 console.log('translateId normKey', normKey)		 
+//		 console.log('dictionary', dictionary)
+//		 console.log('translateId', dictionary[normKey])
 		return dictionary[normKey].getId();
 	}
 

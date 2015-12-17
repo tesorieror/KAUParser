@@ -266,13 +266,27 @@ function Parser() {
 		var categories = arrays[0];
 		arrays = _.without(arrays, categories);
 
-		return _.map(arrays, function(array) {
+		console.log(arrays[0])
+		console.log(arrays[6])
+		
+		var result =  _.map(arrays, function(array) {
 			return new Indicator(categories, array)
 		});
+
+		console.log(result[0]._id)
+		console.log(result[6]._id)
+
+		
+		return result
 	}
 
 	function checkIds(indicators) {
 
+		console.log('chkids')
+		console.log(indicators[0]._id)
+		console.log(indicators[6]._id)
+		
+		
 		var allids = [];
 		var actual = 0;
 		var errors = 0;
@@ -283,7 +297,12 @@ function Parser() {
 		var actual = 0;
 		var total = indicators.length;
 
+		var x = 0
+		
 		_.each(indicators, function(indicator) {
+			
+			console.log(indicator._id, x++)
+			
 			var key = indicator._id;
 			var index = Object.keys(allids).indexOf(key);
 
@@ -301,12 +320,15 @@ function Parser() {
 				var rowPrev = Math.floor(index / 9) + 3;
 				var colPrev = index % 9;
 				var valPrev = allids[key].value;
-				var rowActual = Math.floor(actual / 9) + 3;
-				var colActual = actual % 9;
+//				var rowActual = Math.floor(actual / 9) + 3;
+//				var colActual = actual % 9;
+				var rowActual = Math.floor(ind / 9) + 3;
+				var colActual = (ind-1) % 9;
+				
 				var valActual = indicator.value
 				throw Error('Key:' + key + '\nPrev:' + index + ' ,row:' + rowPrev
-						+ ' ,col:' + colPrev + ' value:' + valPrev + '\nActual:' + actual
-						+ ' , row:' + rowActual + ' ,col:' + colActual + ' value: '
+						+ ' ,col:' + colPrev + ' value:' + valPrev + '\nActual:' + ind
+						+ ' , row:' + rowActual + ' ,col:' + colActual + ' value:'
 						+ valActual);
 				errors = errors + 1;
 			}
