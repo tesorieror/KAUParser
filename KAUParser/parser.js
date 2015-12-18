@@ -266,15 +266,15 @@ function Parser() {
 		var categories = arrays[0];
 		arrays = _.without(arrays, categories);
 
-		console.log(arrays[0])
-		console.log(arrays[6])
+//		console.log(arrays[0])
+//		console.log(arrays[6])
 		
 		var result =  _.map(arrays, function(array) {
 			return new Indicator(categories, array)
 		});
 
-		console.log(result[0]._id)
-		console.log(result[6]._id)
+//		console.log(result[0]._id)
+//		console.log(result[6]._id)
 
 		
 		return result
@@ -282,15 +282,15 @@ function Parser() {
 
 	function checkIds(indicators) {
 
-		console.log('chkids')
-		console.log(indicators[0]._id)
-		console.log(indicators[6]._id)
+//		console.log('chkids')
+//		console.log(indicators[0]._id)
+//		console.log(indicators[6]._id)
 		
 		
 		var allids = [];
 		var actual = 0;
 		var errors = 0;
-		console.log('checkIds indicators', indicators.length)
+//		console.log('checkIds indicators', indicators.length)
 
 		var ind = 0;
 		var last = 0;
@@ -301,7 +301,7 @@ function Parser() {
 		
 		_.each(indicators, function(indicator) {
 			
-			console.log(indicator._id, x++)
+//			console.log(indicator._id, x++)
 			
 			var key = indicator._id;
 			var index = Object.keys(allids).indexOf(key);
